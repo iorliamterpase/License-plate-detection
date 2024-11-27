@@ -4,7 +4,6 @@ THIS PROJECTS USES YOLOV8 ARCHITECTURE TO TRAIN AND DETECT CAR LICENSE PLATES
 
 clone this repository and cd into it
 
-download trained weights
 download trained weights here: https://drive.google.com/file/d/1fISGdH9iKrcB7mF0D_rZzBrgFzBKOAlR/view?usp=drive_link
 move downloaded weights into your work folder
 
