@@ -18,11 +18,11 @@ download inference video using this link: https://videos.pexels.com/video-files/
 
 Run inference on a video 
 
-python detect.py --weights ./weights/best.pt --source ./path/to/video.mp4
+python license.py --weights ./weights/best.pt --source ./path/to/video.mp4
 
 Run inference on image
 
-python detect.py --weights ./weights/best.pt --source ./images.jpeg/image.jpg
+python license.py --weights ./weights/best.pt --source ./images.jpeg/image.jpg
 
 
 
