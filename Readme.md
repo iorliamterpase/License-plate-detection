@@ -14,7 +14,9 @@ python -m venv yolo-v8
 
 pip install -r requirements.txt
 
-Run inference on a video
+download inference video using this link: https://videos.pexels.com/video-files/7741449/7741449-sd_640_360_24fps.mp4
+
+Run inference on a video 
 
 python detect.py --weights ./weights/best.pt --source ./path/to/video.mp4
 
