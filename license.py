@@ -11,20 +11,14 @@ import json
 import sqlite3
 
 
-
-
-
-
-
-
 os.environ["KMP_DUPLICATE_LIB_OK"]= "True"
 
 
 # Replace 'path_to_video.mp4' with the actual path to your video file
-cap = cv2.VideoCapture("C:/Users/HP/OneDrive/Desktop/bank-customer-churn-prediction/License_plate_detection/yolo-V8/resource/car_license2.mp4")
+cap = cv2.VideoCapture("test_video.mp4")
 
 #initialize yolo model
-model= YOLO("license_plate_best.pt")
+model= YOLO("best.pt")
 
 #initialize frame count
 count=0
