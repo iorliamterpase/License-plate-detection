@@ -8,17 +8,22 @@ import re
 import os
 from datetime import datetime
 import json
-import sqlite3
+import argparse
+
+parser = argparse.ArgumentParser(description='Run license plate detection')
+parser.add_argument('-w', '--weight', type=str, default="best.pt", help='Path to weights', required=True)
+parser.add_argument('-s', '--source', type=str, default="test_video.mp4", help='Source path', required=True)
+args = parser.parse_args()
 
 
 os.environ["KMP_DUPLICATE_LIB_OK"]= "True"
 
 
 # Replace 'path_to_video.mp4' with the actual path to your video file
-cap = cv2.VideoCapture("test_video.mp4")
+cap = cv2.VideoCapture(args.source)
 
 #initialize yolo model
-model= YOLO("best.pt")
+model= YOLO(args.weight)
 
 #initialize frame count
 count=0
@@ -46,13 +51,16 @@ def paddleocr(frame,x1,y1,x2,y2):
     text=text.replace("O","0")
     return str(text)
 
-def save_json(license_plate,startTime,endTime):
-    #generate individual json_file for each 20 seconds
-    interval_data = {
-        "StartTime":startTime.isoformat(),
-        "endTime":endTime.isoformat(),
-        "license_plate":license_plate
-        }
+# def save_json(interval_filepath, license_nums, startTime, endTime):
+#     #generate individual json_file for each 20 seconds
+#     interval_data = {
+#         "StartTime":startTime.isoformat(),
+#         "endTime":endTime.isoformat(),
+#         "license_numbers":license_nums
+#         }
+
+#     with open (interval_filepath,'w') as f:
+#         json.dump(interval_data,f,indent=2)
 
     
 
@@ -64,26 +72,25 @@ os.makedirs(directory, exist_ok=True)
 
 
 
-#cummulative Json file
-cummulative_filepath="json/LicensePlateDetection.json"
-if os.path.exists(cummulative_filepath):
-    with open(cummulative_filepath,'r')as f:
-        existing_data=json.load(f)
-else:
-    existing_data=[]
+# # Json file
+# json_filepath="json/LicensePlateDetection.json"
+# if os.path.exists(cummulative_filepath):
+#     with open(cummulative_filepath,'r')as f:
+#         existing_data=json.load(f)
+# else:
+#     existing_data=[]
 
-existing_data.append("interval_data")
+# existing_data.append("interval_data")
 
-#add new interval data to cummulative data
+# #add new interval data to cummulative data
 
-with open (cummulative_filepath,'w') as f:
-    json.dump(existing_data,f,indent=2)
-
+# with open (cummulative_filepath,'w') as f:
+#     json.dump(existing_data,f,indent=2)
 
 
 
 startTime=datetime.now()
-license_plate=set()
+license_nums=set()
 while True:
     ret, frame = cap.read()
     if ret:
@@ -103,21 +110,21 @@ while True:
                 #label= f'{className}:{conf}'
                 label=paddleocr(frame,x1,y1,x2,y2)
                 if label:
-                    license_plate.add(label)
+                    license_nums.add(label)
                 textsize=cv2.getTextSize(label, 0, fontScale=0.5,thickness=2)[0]
                 c2=x1 + textsize[0],y1 - textsize[1] -3
-                cv2.rectangle(frame, (x1, y1), c2, (255-1, 0, 0), thickness=2)
+                # cv2.rectangle(frame, (x1, y1), c2, (255-1, 0, 0), thickness=2)
                 cv2.putText(frame, label, (x1, y1 - 2), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, lineType=cv2.LINE_AA)
 
 
         endTime=currentTime 
-    if (currentTime - startTime).seconds >= 20:
-        cv2.imshow("Video", frame)
-        save_json(license_plate,startTime,endTime)
-        startTime=currentTime
-        # Press 'q' to quit the video
-        if cv2.waitKey(25) & 0xFF == ord('q'):
-            break
+    # if (currentTime - startTime).seconds >= 20:
+    cv2.imshow("Video", frame)
+    # save_json(interval_filepath, license_nums, startTime, endTime)
+    startTime=currentTime
+    # Press 'q' to quit the video
+    if cv2.waitKey(25) & 0xFF == ord('q'):
+        break
     else:
         continue
 
